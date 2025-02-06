@@ -5,14 +5,17 @@
     font-family: 'Open Sans', sans-serif;
 }
 
+html, body {
+    height: 100%;
+    width: 100%;
+    overflow: hidden;
+}
+
 body {
     display: flex;
     justify-content: center;
     align-items: center;
-    height: 100vh;
-    width: 100vw;
     position: relative;
-    overflow: hidden;
 }
 
 /* Spline Viewer como fundo */
