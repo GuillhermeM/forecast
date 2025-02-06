@@ -11,21 +11,29 @@ body {
     align-items: center;
     height: 100vh;
     width: 100vw;
-    background-image: url("./paisagem-natural.jpg");
-    background-size: cover;
     position: relative;
+    overflow: hidden;
+}
+
+/* Spline Viewer como fundo */
+spline-viewer {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    z-index: -1;
 }
 
 .caixa-maior {
     background-color: #034365;
-    width: 95%; 
-    max-width: 500px; 
+    width: 95%;
+    max-width: 500px;
     opacity: 0.8;
     padding: 30px;
     border-radius: 25px;
-    position: absolute;
-    bottom: 180px;
-    right: 190px;
+    z-index: 1;
+    text-align: center;
 }
 
 input {
@@ -36,7 +44,8 @@ input {
     font-size: 20px;
     background-color: #7c7c7c2b;
     color: #ffffff;
-    width: calc( 100% - 100px);
+    width: calc(100% - 100px);
+    margin-bottom: 20px;
 }
 
 button {
@@ -45,8 +54,8 @@ button {
     padding: 10px;
     border-radius: 50px;
     background-color: #7c7c7c2b;
-    float: right;
     cursor: pointer;
+    display: inline-block;
 }
 
 button:hover {
@@ -55,12 +64,6 @@ button:hover {
 
 .caixa-media {
     margin-top: 30px;
-}
-
-.caixa-menor {
-    display: flex;
-    margin-top: 30px;
-    align-items: center;
 }
 
 .lupa {
@@ -76,12 +79,6 @@ h2 {
     color: #ffffff;
     margin-top: 30px;
     font-size: 30px;
-}
-
-.descricao {
-    color: #ffffff;
-    margin-left: 20px;
-    text-transform: capitalize;
 }
 
 .umidade {

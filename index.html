@@ -1,6 +1,5 @@
 <!DOCTYPE html>
 <html lang="pt-br">
-
 <head>
     <meta charset="UTF-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
@@ -9,30 +8,91 @@
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Open+Sans:wght@300&display=swap" rel="stylesheet">
-    <script src="scripts.js"></script>
-    <title>Dev Previsão</title>
+    <title>Previsão do Tempo com 3D</title>
 </head>
-
 <body>
+    <!-- Spline Viewer -->
+    <script type="module" src="https://unpkg.com/@splinetool/viewer@1.9.62/build/spline-viewer.js"></script>
+    <spline-viewer id="spline-viewer" url="https://prod.spline.design/NjelZSTpuPRA1DOK/scene.splinecode"></spline-viewer>
 
+    <!-- Caixa de pesquisa e informações do tempo -->
     <div class="caixa-maior">
-
-        <input class="input-cidade" placeholder="Digite o nome da cidade">
-        <button onclick="cliqueiNoBotao()">
+        <input class="input-cidade" id="input-cidade" placeholder="Digite o nome da cidade">
+        <button onclick="buscarClima()">
             <img class="lupa" src="https://www.svgrepo.com/show/488200/find.svg">
         </button>
 
-        <div class="caixa-media">
-            <h2 class="cidade">Tempo em Rio de Janeiro</h2>
-            <p class="temp">28°C</p>
-
-            <img class="icone" src="https://openweathermap.org/img/wn/04n.png">
-
-            <p class="umidade">Umidade: 70%</p>
+        <div class="caixa-media" id="caixa-media">
+            <h2 class="cidade" id="cidade">Tempo em Rio de Janeiro</h2>
+            <p class="temp" id="temp">28°C</p>
+            <img class="icone" id="icone" src="https://openweathermap.org/img/wn/04n.png">
+            <p class="umidade" id="umidade">Umidade: 70%</p>
         </div>
-
     </div>
 
-</body>
+    <script>
+        const chave = "cebcd482eda57fa9a6714c1c2ba91885"; // Sua chave da API OpenWeatherMap
 
+        // Função para buscar o clima da cidade
+        async function buscarClima() {
+            const cidade = document.getElementById("input-cidade").value;
+            if (!cidade) {
+                alert("Por favor, digite o nome da cidade.");
+                return;
+            }
+
+            try {
+                const resposta = await fetch(
+                    `https://api.openweathermap.org/data/2.5/weather?q=${cidade}&appid=${chave}&lang=pt_br&units=metric`
+                );
+                const dados = await resposta.json();
+
+                if (dados.cod === "404") {
+                    alert("Cidade não encontrada. Verifique o nome e tente novamente.");
+                    return;
+                }
+
+                // Atualiza os dados na tela
+                colocarNaTela(dados);
+            } catch (erro) {
+                console.error("Erro ao buscar dados:", erro);
+                alert("Erro ao buscar dados. Tente novamente mais tarde.");
+            }
+        }
+
+        // Função para atualizar os dados na tela
+        function colocarNaTela(dados) {
+            document.getElementById("cidade").innerHTML = `Tempo em ${dados.name}`;
+            document.getElementById("temp").innerHTML = `${Math.floor(dados.main.temp)}°C`;
+            document.getElementById("icone").src = `https://openweathermap.org/img/wn/${dados.weather[0].icon}.png`;
+            document.getElementById("umidade").innerHTML = `Umidade: ${dados.main.humidity}%`;
+
+            // Interage com o Spline Viewer de acordo com o clima
+            interagirComSpline(dados.weather[0].main);
+        }
+
+        // Função para interagir com o Spline Viewer
+        function interagirComSpline(condicaoClimatica) {
+            const splineViewer = document.getElementById("spline-viewer");
+
+            // Verifica a condição climática e atualiza o Spline Viewer
+            if (condicaoClimatica.toLowerCase().includes("rain") || condicaoClimatica.toLowerCase().includes("chuva")) {
+                // Cena para chuva
+                splineViewer.setAttribute("url", "https://prod.spline.design/f4krgKsfE3oIdMad/scene.splinecode");
+            } else if (condicaoClimatica.toLowerCase().includes("clear") || condicaoClimatica.toLowerCase().includes("sol")) {
+                // Cena para sol
+                splineViewer.setAttribute("url", "https://prod.spline.design/S4T2FmGSuQXmb7Jb/scene.splinecode");
+            } else if (condicaoClimatica.toLowerCase().includes("clouds") || condicaoClimatica.toLowerCase().includes("nublado")) {
+                // Cena para nublado (substitua pela URL da cena nublado)
+                splineViewer.setAttribute("url", "URL_DO_MODELO_3D_PARA_NUBLADO");
+            } else if (condicaoClimatica.toLowerCase().includes("snow") || condicaoClimatica.toLowerCase().includes("neve")) {
+                // Cena para neve (substitua pela URL da cena neve)
+                splineViewer.setAttribute("url", "URL_DO_MODELO_3D_PARA_NEVE");
+            } else {
+                // Cena padrão
+                splineViewer.setAttribute("url", "https://prod.spline.design/NjelZSTpuPRA1DOK/scene.splinecode");
+            }
+        }
+    </script>
+</body>
 </html>
